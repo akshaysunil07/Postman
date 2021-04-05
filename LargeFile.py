@@ -1,13 +1,12 @@
-from pandas import read_csv
+import pandas as pd 
 import mysql.connector
-
 df = pd.read_csv('https://drive.google.com/file/d/1mcHccwN__a5Il3VnhyuArNqozPDJny6y/view?usp=sharing')
 
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="BabylonXX3007",
-    database='bank')
+    database='test_schema')
 
 print(mydb)
 
@@ -19,10 +18,7 @@ for row in df.itertuples():
     sql = f"""INSERT INTO products(name, sku, description) VALUES {row[1:]} ON DUPLICATE KEY UPDATE name='{row[1:][0]}', description='{row[1:][2]}'"""
     cur.execute(sql)
     mydb.commit()
-cur.execute("SELECT NAME,COUNT(SKU) No. of Products FROM customers GROUP BY NAME")
 
-myresult = mycursor.fetchall()
-
-for x in myresult:
-    print(x)
-
+cur.execute('CREATE TABLE aggregate_table AS (SELECT name,COUNT(sku) as number_of_products FROM products group by name)')
+cur.execute('SELECT name, number_of_products FROM aggregate'))
+myresult = cur.fetchall()
